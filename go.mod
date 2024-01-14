@@ -1,13 +1,16 @@
 module github.com/mleonidas/psqlconnect
 
-go 1.18
+go 1.21.6
 
 require (
-	github.com/joshuathompson/psqlconnect v0.0.0-20211115062557-acf991bd9734
-	github.com/jroimartin/gocui v0.3.1-0.20170827195011-4f518eddb04b
+	github.com/jroimartin/gocui v0.5.0
+	go.uber.org/zap v1.26.0
+	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
 
 require (
-	github.com/mattn/go-runewidth v0.0.2 // indirect
-	github.com/nsf/termbox-go v0.0.0-20171104162316-aa4a75b1c20a // indirect
+	github.com/mattn/go-runewidth v0.0.15 // indirect
+	github.com/nsf/termbox-go v1.1.1 // indirect
+	github.com/rivo/uniseg v0.4.4 // indirect
+	go.uber.org/multierr v1.10.0 // indirect
 )

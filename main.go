@@ -1,12 +1,16 @@
 package main
 
 import (
-	"log"
+	"os"
 	"strings"
 
-	"github.com/joshuathompson/psqlconnect/pgpass"
-	"github.com/joshuathompson/psqlconnect/ui"
 	"github.com/jroimartin/gocui"
+	"github.com/mleonidas/psqlconnect/pgpass"
+	"github.com/mleonidas/psqlconnect/ui"
+	"gopkg.in/natefinch/lumberjack.v2"
+
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 var (
@@ -15,45 +19,67 @@ var (
 	selectedIndex       = 0
 	connectOnExit       = false
 	filter              = ""
+	logger              *zap.Logger
 )
 
+func createLogger() *zap.Logger {
+	stdout := zapcore.AddSync(os.Stdout)
+
+	file := zapcore.AddSync(&lumberjack.Logger{
+		Filename:   "/tmp/psqlconnect.log",
+		MaxSize:    10, // megabytes
+		MaxBackups: 3,
+		MaxAge:     7, // days
+	})
+
+	level := zap.NewAtomicLevelAt(zap.InfoLevel)
+
+	productionCfg := zap.NewProductionEncoderConfig()
+	productionCfg.TimeKey = "timestamp"
+	productionCfg.EncodeTime = zapcore.ISO8601TimeEncoder
+
+	developmentCfg := zap.NewDevelopmentEncoderConfig()
+	developmentCfg.EncodeLevel = zapcore.CapitalColorLevelEncoder
+
+	consoleEncoder := zapcore.NewConsoleEncoder(developmentCfg)
+	fileEncoder := zapcore.NewJSONEncoder(productionCfg)
+
+	core := zapcore.NewTee(
+		zapcore.NewCore(consoleEncoder, stdout, level),
+		zapcore.NewCore(fileEncoder, file, level),
+	)
+
+	return zap.New(core)
+}
+
 func main() {
+	logger = createLogger()
+	defer logger.Sync()
 	var err error
-
 	connections, err = pgpass.LoadConnectionsFromPgpass()
-
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal("failed to load the connection pgpass", zap.Error(err))
 	}
-
 	filteredConnections = connections
-
 	g, err := gocui.NewGui(gocui.OutputNormal)
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal("failed to setup gui", zap.Error(err))
 	}
-
 	g.Cursor = true
 	g.SetManagerFunc(layout)
-
 	err = keybindings(g)
-
 	if err != nil {
 		g.Close()
-		log.Fatal(err)
+		logger.Fatal("failed to setup keybindings", zap.Error(err))
 	}
-
 	err = g.MainLoop()
-
 	if err != nil && err != gocui.ErrQuit {
 		g.Close()
-		log.Fatal(err)
+		logger.Fatal("failed to run the mainloop", zap.Error(err))
 	}
-
 	g.Close()
-
 	if connectOnExit {
-		pgpass.ConnectToDatabase(connections[selectedIndex])
+		pgpass.ConnectToDatabase(filteredConnections[selectedIndex])
 	}
 }
 
@@ -140,28 +166,21 @@ func keybindings(g *gocui.Gui) error {
 
 	err = g.SetKeybinding("filter", gocui.KeyEnter, gocui.ModNone, func(g *gocui.Gui, v *gocui.View) error {
 		buffer := v.Buffer()
-
 		err := g.DeleteView("filter")
-
 		if err != nil {
 			return err
 		}
-
 		filter = strings.TrimSuffix(strings.TrimSpace(buffer), "\n")
-
 		g.Highlight = false
 		g.SelFgColor = gocui.ColorWhite
 		cv, err := g.SetCurrentView("connections")
-
 		if len(filter) > 0 {
 			filteredConnections = pgpass.GetFilteredConnections(connections, filter)
 		} else {
 			filteredConnections = connections
 		}
-
 		selectedIndex = 0
 		err = cv.SetCursor(0, 0)
-
 		return err
 	})
 

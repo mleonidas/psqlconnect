@@ -3,8 +3,8 @@ package ui
 import (
 	"fmt"
 
-	"github.com/joshuathompson/psqlconnect/utils"
 	"github.com/jroimartin/gocui"
+	"github.com/mleonidas/psqlconnect/utils"
 )
 
 func RenderHeaderView(g *gocui.Gui, numberOfConnections int, filter string) error {

@@ -3,9 +3,9 @@ package ui
 import (
 	"fmt"
 
-	"github.com/joshuathompson/psqlconnect/pgpass"
-	"github.com/joshuathompson/psqlconnect/utils"
 	"github.com/jroimartin/gocui"
+	"github.com/mleonidas/psqlconnect/pgpass"
+	"github.com/mleonidas/psqlconnect/utils"
 )
 
 func RenderConnectionsView(g *gocui.Gui, connections []*pgpass.Connection) error {
