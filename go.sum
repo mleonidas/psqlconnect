@@ -1,0 +1,8 @@
+github.com/joshuathompson/psqlconnect v0.0.0-20211115062557-acf991bd9734 h1:K1DRr1f4w85WrTgPddCwPNfTYxkm76lObpFXnRkvlRo=
+github.com/joshuathompson/psqlconnect v0.0.0-20211115062557-acf991bd9734/go.mod h1:uHhTG6R4lUKb4QdcV1/AlJai9bl/Yeg4mHOdsTEdqcM=
+github.com/jroimartin/gocui v0.3.1-0.20170827195011-4f518eddb04b h1:oXDIgfbS+8ScemPBkP9aedVduRryQvoz6U7mlfh4zhs=
+github.com/jroimartin/gocui v0.3.1-0.20170827195011-4f518eddb04b/go.mod h1:7i7bbj99OgFHzo7kB2zPb8pXLqMBSQegY7azfqXMkyY=
+github.com/mattn/go-runewidth v0.0.2 h1:UnlwIPBGaTZfPQ6T1IGzPI0EkYAQmT9fAEJ/poFC63o=
+github.com/mattn/go-runewidth v0.0.2/go.mod h1:LwmH8dsx7+W8Uxz3IHJYH5QSwggIsqBzpuz5H//U1FU=
+github.com/nsf/termbox-go v0.0.0-20171104162316-aa4a75b1c20a h1:USZ2AkITyiH9LzgIrssF9S5mRQhbRvvTkAFlJHiWmfg=
+github.com/nsf/termbox-go v0.0.0-20171104162316-aa4a75b1c20a/go.mod h1:IuKpRQcYE1Tfu+oAQqaLisqDeXgjyyltCfsaoYN18NQ=
